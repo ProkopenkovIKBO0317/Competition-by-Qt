@@ -109,7 +109,8 @@ void MainWindow::on_exit_button_clicked()
     QString str ="";
     QString begin = "Начало сеанса";
     QString end = "Конец сеанса";
-    QFile file("ываыррварв.txt");
+    QString score = "Очки: ";
+    QFile file("CompetitionResult.txt");
     QTextStream out(&file);
     out << begin << "\n";
     sort(vecComp.begin(),vecComp.end(), compareCompByScore());
@@ -130,13 +131,13 @@ void MainWindow::on_exit_button_clicked()
     for(int i = 0; i < vecComp.size(); i++) {
         if(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
           {
-               out << "#" << (vecComp[i].getNumber()) << "  " << vecComp[i].getName()<< " | " <<  "Score: " << vecComp[i].getScore() << "\n";
+               out << "#" << (vecComp[i].getNumber()) << " | " << vecComp[i].getName()<< " | " << score << vecComp[i].getScore() << "\n";
                file.close();
           }
         str += "#";
-        str += QString::number(vecComp[i].getNumber()) +" ";
+        str += QString::number(vecComp[i].getNumber()) +" | ";
         str += vecComp[i].getName() + " | ";
-        str += "Score: ";
+        str += score;
         str += QString::number(vecComp[i].getScore()) + "\n";
     }
     if(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
