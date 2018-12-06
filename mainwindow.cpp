@@ -85,21 +85,11 @@ void MainWindow::on_pushButton_3_clicked()
 
 void MainWindow::Score_registration()
 {
+    ui->label_4->setText("      Конкурс завершен");
     for(int i = 0; i < vecComp.size(); i++) {
         vecComp[i].setScore(qrand() % 30 + 1);
         vecComp[i].setNumber(i+1);
     }
-    /*
-    for(int i = 0; i < vecComp.size(); i++) {
-        QFile file("D:/Result.txt");
-                if(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
-                {
-                     QTextStream out(&file);
-                     out << "#" << vecComp[i].getNumber() << "  " << vecComp[i].getName()<< "\n" <<  "Score: " << vecComp[i].getScore() << "\n\n";
-                     file.close();
-                }
-    }
-    */
     QMessageBox::information(this, "Диалоговое окно", "Баллы успешно зарегистрированы");
     ui->pushButton_4->setEnabled(false);
     ui->pushButton_5->setEnabled(true);
@@ -110,7 +100,8 @@ void MainWindow::Score_registration()
 void MainWindow::on_pushButton_5_clicked()
 {
     ui->exit_button->setVisible(true);
-
+    ui->pushButton_5->hide();
+    ui->label_4->hide();
 }
 
 void MainWindow::on_exit_button_clicked()
