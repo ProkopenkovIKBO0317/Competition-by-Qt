@@ -6,19 +6,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
 
     ui(new Ui::MainWindow),
-    name_validator(QRegExp("^[а-яА-Я]{20}$"))
+    name_validator(QRegExp("^[а-яА-Я]{20}$")),
+    score_validator(QRegExp("^[0-9]{3}$"))
 
 {
     ui->setupUi(this);
     ui->pushButton_2->hide();
     ui->pushButton_3->hide();
     ui->pushButton_4->hide();
+    ui->lineScore->hide();
     ui->pushButton_5->hide();
     ui->label_4->hide();
+    ui->label_score->hide();
     ui->label_2->hide();
     ui->label_3->hide();
     ui->lineText->hide();
     ui->lineText->setValidator(&name_validator);
+    ui->lineScore->setValidator(&score_validator);
     ui->exit_button->hide();
     ui->out_result->hide();
 
@@ -41,20 +45,15 @@ void MainWindow::on_pushButton_clicked()
     ui->lineText->setVisible(true);
 }
 
-void MainWindow::on_pushButton_2_clicked()
-{
-
-}
-
 void MainWindow::Registration()
 {
     c.setName(ui->lineText->text());
-    if(c.getName() == "") {
+    if(ui->lineText->text().isEmpty()) {
         QMessageBox::critical(this, "Ошибка", "Вы ничего не ввели!");
     } else {
         QMessageBox::information(this, "Диалоговое окно", "Участник успешно зарегистрирован");
+    }
 
-        //ui->statusBar->showMessage("Участник успешно зарегистрирован");
         vecComp.push_back(c);
         if(vecComp.size() >= 10) {
             QMessageBox::about(this, "Диалоговое окно", "Зарегистрировано максимальное количество участников!");
@@ -63,7 +62,10 @@ void MainWindow::Registration()
         }
         qDebug() << vecComp.size();
         ui->lineText->clear();
-    };
+        for(int i = 0; i < vecComp.size(); i++) {
+            vecComp[i].setNumber(i+1);
+        }
+
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -71,6 +73,9 @@ void MainWindow::on_pushButton_3_clicked()
     if(vecComp.size() == 0) {
         QMessageBox::critical(this, "Ошибка", "Отсутствуют зарегистрированные участники!");
     } else {
+        QString s = QString::number(1);
+        ui->label_4->setText("     Участник #" + s);
+        ui->label_score->setVisible(true);
         ui->pushButton_3->hide();
         ui->lineText->hide();
         ui->label_2->hide();
@@ -78,6 +83,7 @@ void MainWindow::on_pushButton_3_clicked()
         ui->label_3->setVisible(true);
         ui->label_4->setVisible(true);
         ui->pushButton_4->setVisible(true);
+        ui->lineScore->setVisible(true);
         ui->pushButton_5->setVisible(true);
         ui->pushButton_5->setEnabled(false);
     }
@@ -85,27 +91,53 @@ void MainWindow::on_pushButton_3_clicked()
 
 void MainWindow::Score_registration()
 {
-    ui->label_4->setText("      Конкурс завершен");
-    for(int i = 0; i < vecComp.size(); i++) {
-        vecComp[i].setScore(qrand() % 30 + 1);
-        vecComp[i].setNumber(i+1);
+    c.setScore(ui->lineScore->text().toInt());
+    if(c.getScore() > 100 || ui->lineScore->text().isEmpty()) {
+        QMessageBox::critical(this, "Недопустимое значение", "Максимально возможный балл - 100, а минимально возможный - 0");
+    } else {
+        QMessageBox::information(this, "Диалоговое окно", "Балл успешно зарегистрирован");
+        QString s = QString::number(j);
+        j++;
+        vecScore.push_back(c.getScore());
+        if(vecScore.size() >= vecComp.size()) {
+            QMessageBox::about(this, "Диалоговое окно", "Все баллы зарегистрированы!");
+            ui->pushButton_4->setEnabled(false);
+            ui->lineScore->setReadOnly(true);
+            ui->pushButton_5->setEnabled(true);
+            ui->label_4->hide();
+        }
+        ui->label_4->setText("     Участник #" + s);
     }
-    QMessageBox::information(this, "Диалоговое окно", "Баллы успешно зарегистрированы");
-    ui->pushButton_4->setEnabled(false);
-    ui->pushButton_5->setEnabled(true);
+    ui->lineScore->clear();
 }
-
-
 
 void MainWindow::on_pushButton_5_clicked()
 {
     ui->exit_button->setVisible(true);
     ui->pushButton_5->hide();
-    ui->label_4->hide();
+    ui->label_score->hide();
+    ui->lineScore->hide();
+
+    for(int i = 0; i < vecScore.size(); i++) {
+        vecComp[i].setScore(vecScore[i]);
+    }
+
 }
 
 void MainWindow::on_exit_button_clicked()
 {
+    ui->pushButton_2->hide();
+    ui->pushButton_3->hide();
+    ui->pushButton_4->hide();
+    ui->lineScore->hide();
+    ui->pushButton_5->hide();
+    ui->label_4->hide();
+    ui->label_score->hide();
+    ui->label_2->hide();
+    ui->label_3->hide();
+    ui->lineText->hide();
+    ui->exit_button->hide();
+
     QString str ="";
     QString begin = "Начало сеанса";
     QString end = "Конец сеанса";
